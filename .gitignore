@@ -1,0 +1,7 @@
+# Bot token and chat_id — never commit
+secrets.bat
+.env
+.dev.vars
+
+# Cloudflare Wrangler local state
+.wrangler/

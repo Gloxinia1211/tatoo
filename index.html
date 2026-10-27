@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Чёрная Игла — тату-студия</title>
+  <meta name="description" content="Тату-студия «Чёрная Игла»: прайс-лист, мастера и онлайн-запись на сеанс.">
+
+  <style>
+    /* =========================================================
+       1. ПЕРЕМЕННЫЕ ТЕМЫ
+       Все цвета и базовые размеры — здесь. Меняйте палитру в одном месте.
+       ========================================================= */
+    :root {
+      --bg:        #0c0b0b;   /* фон страницы — почти чёрный */
+      --surface:   #161414;   /* карточки */
+      --surface-2: #1f1c1c;   /* поля ввода, вложенные блоки */
+      --line:      #332e2c;   /* рамки и разделители */
+      --text:      #ede6da;   /* основной текст — «костяной» */
+      --muted:     #a59d92;   /* второстепенный текст */
+      --accent:    #e2382b;   /* главный акцент — красные чернила */
+      --accent-2:  #d9b25f;   /* второй акцент — старое золото */
+      --ok:        #5fbf7a;
+      --error:     #ff6b5e;
+
+      --radius: 10px;
+      --gutter: 16px;
+      --maxw: 1120px;
+
+      /* Шрифты — только системные, без внешних зависимостей */
+      --font-display: Impact, "Haettenschweiler", "Arial Narrow Bold", "Oswald", sans-serif;
+      --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    /* =========================================================
+       2. БАЗОВЫЕ СТИЛИ (mobile-first: всё ниже — для узких экранов,
+          медиазапросы в конце расширяют раскладку)
+       ========================================================= */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.6 var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+    img, svg { display: block; max-width: 100%; }
+
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin: 0 0 .5em;
+    }
+    h2 { font-size: clamp(2rem, 7vw, 3.25rem); }
+    h3 { font-size: 1.4rem; }
+
+    .container {
+      width: 100%;
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+    }
+
+    section { padding: 64px 0; }
+
+    /* Подзаголовок секции с «чернильной» чертой */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--accent);
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: currentColor;
+    }
+
+    .lead { color: var(--muted); max-width: 60ch; margin: 0 0 32px; }
+
+    /* Кнопки */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 24px;
+      border: 2px solid var(--accent);
+      border-radius: var(--radius);
+      background: var(--accent);
+      color: #fff;
+      font: 700 .95rem/1 var(--font-body);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background .2s, color .2s, transform .1s;
+    }
+    .btn:hover { background: transparent; color: var(--accent); }
+    .btn:active { transform: translateY(1px); }
+    .btn:disabled { opacity: .6; cursor: wait; }
+    .btn--ghost { background: transparent; color: var(--text); border-color: var(--line); }
+    .btn--ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .btn--small { min-height: 40px; padding: 0 16px; font-size: .8rem; }
+
+    :focus-visible { outline: 2px solid var(--accent-2); outline-offset: 3px; }
+
+    /* =========================================================
+       3. ШАПКА И НАВИГАЦИЯ
+       ========================================================= */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(12, 11, 11, .92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+    }
+    .header__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .logo svg { width: 26px; height: 26px; color: var(--accent); }
+
+    .nav-toggle {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .nav {
+      position: absolute;
+      top: 64px;
+      left: 0;
+      right: 0;
+      display: none;
+      flex-direction: column;
+      padding: 8px var(--gutter) 16px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav.is-open { display: flex; }
+    .nav a {
+      padding: 12px 0;
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: .9rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .nav a:last-child { border-bottom: 0; color: var(--accent); }
+    .nav a:hover { color: var(--accent); }
+
+    /* =========================================================
+       4. ПЕРВЫЙ ЭКРАН
+       ========================================================= */
+    .hero {
+      position: relative;
+      padding: 72px 0 80px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      /* Лёгкая «чернильная» текстура из градиентов */
+      background:
+        radial-gradient(circle at 85% 20%, rgba(226, 56, 43, .18), transparent 45%),
+        radial-gradient(circle at 10% 90%, rgba(217, 178, 95, .08), transparent 40%),
+        var(--bg);
+    }
+    .hero h1 {
+      font-size: clamp(3rem, 15vw, 7rem);
+      margin-bottom: 16px;
+    }
+    .hero h1 span { color: var(--accent); display: block; }
+    .hero p { color: var(--muted); font-size: 1.1rem; max-width: 46ch; margin: 0 0 32px; }
+    .hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .hero__ornament {
+      position: absolute;
+      right: -60px;
+      bottom: -60px;
+      width: 280px;
+      color: var(--line);
+      opacity: .7;
+      pointer-events: none;
+    }
+    .hero__facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px 40px;
+      margin-top: 48px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+    .hero__facts strong {
+      display: block;
+      color: var(--text);
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 400;
+    }
+
+    /* =========================================================
+       5. ПРАЙС-ЛИСТ
+       ========================================================= */
+    .price-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+    }
+    .price-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4px 16px;
+      align-items: start;
+      padding: 18px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+    }
+    .price-item__tag {
+      grid-column: 1 / -1;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+    }
+    .price-item__name { font-weight: 700; font-size: 1.05rem; }
+    .price-item__price {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      white-space: nowrap;
+    }
+    .price-item__desc { grid-column: 1 / -1; color: var(--muted); font-size: .9rem; margin: 0; }
+    .price-item__meta {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 8px;
+      font-size: .85rem;
+      color: var(--muted);
+    }
+    .price-note { color: var(--muted); font-size: .85rem; margin-top: 20px; }
+
+    /* =========================================================
+       6. МАСТЕРА
+       ========================================================= */
+    .masters { display: grid; gap: 16px; }
+    .master {
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .master__head { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    /* Аватар без картинок: инициалы на «штриховке» */
+    .avatar {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      background: repeating-linear-gradient(45deg, var(--surface-2) 0 6px, #262120 6px 8px);
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+    }
+    .master__name { margin: 0; font-size: 1.5rem; }
+    .master__nick { color: var(--accent); font-size: .85rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .master__bio { color: var(--muted); margin: 0 0 16px; }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0 0 16px; padding: 0; }
+    .tags li {
+      padding: 4px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: .8rem;
+    }
+
+    .schedule {
+      margin: 0 0 20px;
+      padding: 12px 14px;
+      background: var(--surface-2);
+      border-radius: var(--radius);
+      font-size: .9rem;
+    }
+    .schedule dt { color: var(--muted); font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; }
+    .schedule dd { margin: 2px 0 8px; font-weight: 600; }
+    .schedule dd:last-child { margin-bottom: 0; }
+    .master .btn { margin-top: auto; }
+
+    /* =========================================================
+       7. ФОРМА ЗАПИСИ
+       ========================================================= */
+    .booking { display: grid; gap: 24px; }
+    .form {
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    fieldset { border: 0; margin: 0 0 24px; padding: 0; min-width: 0; }
+    legend {
+      padding: 0;
+      margin-bottom: 12px;
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    legend .step { color: var(--accent); margin-right: 6px; }
+
+    /* Выбор мастера — карточки-радиокнопки */
+    .master-picker { display: grid; gap: 10px; }
+    .master-option { position: relative; display: block; cursor: pointer; }
+    .master-option input { position: absolute; opacity: 0; pointer-events: none; }
+    .master-option__body {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      transition: border-color .15s, background .15s;
+    }
+    .master-option .avatar { width: 44px; height: 44px; font-size: 1.1rem; border-width: 1px; }
+    .master-option__text { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+    .master-option__text strong { font-size: .95rem; }
+    .master-option__text small { color: var(--muted); }
+    .master-option:hover .master-option__body { border-color: #5a4f4b; }
+    .master-option input:checked + .master-option__body {
+      border-color: var(--accent);
+      background: rgba(226, 56, 43, .1);
+    }
+    .master-option input:focus-visible + .master-option__body { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .field:last-child { margin-bottom: 0; }
+    .field label, .field-label { font-weight: 600; font-size: .9rem; }
+    .field label .opt { color: var(--muted); font-weight: 400; }
+
+    input[type="text"], input[type="tel"], input[type="email"],
+    input[type="date"], select, textarea {
+      width: 100%;
+      min-height: 48px;
+      padding: 10px 14px;
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      font: inherit;
+      color-scheme: dark; /* тёмный системный календарь у date picker */
+    }
+    textarea { min-height: 96px; resize: vertical; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent-2); }
+    select:disabled { opacity: .5; cursor: not-allowed; }
+
+    .row { display: grid; gap: 0 16px; }
+
+    .hint { color: var(--muted); font-size: .82rem; margin: 0; }
+    .error-msg { color: var(--error); font-size: .82rem; margin: 0; min-height: 0; }
+    .error-msg:empty { display: none; }
+    .is-invalid input, .is-invalid select, .is-invalid textarea,
+    .is-invalid .master-option__body { border-color: var(--error); }
+
+    .checkbox { display: flex; gap: 10px; align-items: flex-start; font-size: .9rem; cursor: pointer; }
+    .checkbox input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--accent); flex: none; }
+
+    /* Скрытое поле-ловушка (не display:none — некоторые боты такие поля пропускают) */
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+    .submit-error {
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      border: 1px solid var(--error);
+      border-radius: var(--radius);
+      background: rgba(255, 107, 94, .08);
+    }
+
+    /* Блок итоговой стоимости */
+    .summary {
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: 3px solid var(--accent);
+      border-radius: var(--radius);
+      align-self: start;
+    }
+    .summary h3 { margin-bottom: 16px; }
+    .summary dl { margin: 0; }
+    .summary__row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--line);
+      font-size: .92rem;
+    }
+    .summary__row dt { color: var(--muted); }
+    .summary__row dd { margin: 0; text-align: right; font-weight: 600; }
+    .summary__total {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .summary__total span { color: var(--muted); text-transform: uppercase; letter-spacing: .1em; font-size: .8rem; }
+    .summary__total output {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      color: var(--accent);
+      transition: transform .2s;
+    }
+    .summary__total output.bump { transform: scale(1.08); }
+    .summary .hint { margin-top: 12px; }
+
+    /* Сообщение об успешной записи */
+    .success {
+      padding: 28px 20px;
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--ok);
+      border-radius: var(--radius);
+    }
+    .success__icon {
+      display: grid;
+      place-items: center;
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background: rgba(95, 191, 122, .15);
+      color: var(--ok);
+    }
+    .success__details {
+      display: inline-block;
+      text-align: left;
+      margin: 16px 0 24px;
+      padding: 14px 18px;
+      background: var(--surface-2);
+      border-radius: var(--radius);
+      font-size: .92rem;
+    }
+    .success__details p { margin: 2px 0; }
+    .success__details b { color: var(--accent-2); font-weight: 600; }
+
+    [hidden] { display: none !important; }
+
+    /* =========================================================
+       8. ПОДВАЛ
+       ========================================================= */
+    .footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .9rem;
+    }
+    .footer__grid { display: grid; gap: 20px; }
+    .footer strong { color: var(--text); }
+
+    /* =========================================================
+       9. МЕДИАЗАПРОСЫ — расширяем раскладку для больших экранов
+       ========================================================= */
+    @media (min-width: 640px) {
+      :root { --gutter: 24px; }
+      .price-list { grid-template-columns: repeat(2, 1fr); }
+      .row { grid-template-columns: 1fr 1fr; }
+      .master-picker { grid-template-columns: repeat(3, 1fr); }
+      .master-option__body { flex-direction: column; text-align: center; }
+      .form, .summary { padding: 28px; }
+      .footer__grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (min-width: 900px) {
+      section { padding: 96px 0; }
+      .nav-toggle { display: none; }
+      .nav {
+        position: static;
+        display: flex;
+        flex-direction: row;
+        gap: 28px;
+        padding: 0;
+        background: none;
+        border: 0;
+      }
+      .nav a { padding: 0; border: 0; }
+      .hero { padding: 120px 0 110px; }
+      .hero__ornament { width: 460px; right: -40px; bottom: -80px; }
+      .masters { grid-template-columns: repeat(3, 1fr); }
+      .booking { grid-template-columns: 1fr 340px; align-items: start; }
+      .summary { position: sticky; top: 88px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================= ШАПКА ========================= -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="#top" class="logo" aria-label="Чёрная Игла — на главную">
+        <!-- Логотип: стилизованная игла/кинжал -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M12 2v14M8 6h8M12 16l-2 3 2 3 2-3-2-3z"/>
+        </svg>
+        Чёрная Игла
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Открыть меню">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M3 6h18M3 12h18M3 18h18"/>
+        </svg>
+      </button>
+      <nav class="nav" id="nav">
+        <a href="#prices">Цены</a>
+        <a href="#masters">Мастера</a>
+        <a href="#booking">Записаться</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ========================= ПЕРВЫЙ ЭКРАН ========================= -->
+    <section class="hero">
+      <div class="container">
+        <div class="eyebrow">Тату-студия с 2014 года</div>
+        <h1>Чёрная <span>Игла</span></h1>
+        <p>Авторские эскизы, стерильность уровня операционной и три мастера, которые знают, как сделать так, чтобы татуировка выглядела достойно и через двадцать лет.</p>
+        <div class="hero__actions">
+          <a href="#booking" class="btn">Записаться на сеанс</a>
+          <a href="#prices" class="btn btn--ghost">Смотреть цены</a>
+        </div>
+        <div class="hero__facts">
+          <div><strong>12 лет</strong>в индустрии</div>
+          <div><strong>4 000+</strong>работ</div>
+          <div><strong>3</strong>мастера</div>
+        </div>
+      </div>
+      <!-- Декоративный орнамент -->
+      <svg class="hero__ornament" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+        <circle cx="100" cy="100" r="96"/>
+        <circle cx="100" cy="100" r="72"/>
+        <circle cx="100" cy="100" r="30"/>
+        <path d="M100 4v192M4 100h192M32 32l136 136M168 32L32 168"/>
+        <path d="M100 28l18 72-18 72-18-72z"/>
+        <path d="M28 100l72-18 72 18-72 18z"/>
+      </svg>
+    </section>
+
+    <!-- ========================= ПРАЙС-ЛИСТ ========================= -->
+    <section id="prices">
+      <div class="container">
+        <div class="eyebrow">Прайс-лист</div>
+        <h2>Услуги и цены</h2>
+        <p class="lead">Базовая стоимость указана для мастера с коэффициентом ×1,0. Итоговая цена зависит от выбранного мастера и считается автоматически в форме записи.</p>
+        <!-- Список заполняется из массива SERVICES (см. скрипт) -->
+        <ul class="price-list" id="price-list"></ul>
+        <p class="price-note">* Консультация и разработка эскиза при записи на сеанс — бесплатно. Минимальная стоимость сеанса — 3 000 ₽.</p>
+      </div>
+    </section>
+
+    <!-- ========================= МАСТЕРА ========================= -->
+    <section id="masters">
+      <div class="container">
+        <div class="eyebrow">Команда</div>
+        <h2>Наши мастера</h2>
+        <p class="lead">У каждого свой почерк и свой график. Выберите того, чей стиль откликается вам.</p>
+        <!-- Карточки заполняются из массива MASTERS (см. скрипт) -->
+        <div class="masters" id="masters-list"></div>
+      </div>
+    </section>
+
+    <!-- ========================= ЗАПИСЬ ========================= -->
+    <section id="booking">
+      <div class="container">
+        <div class="eyebrow">Онлайн-запись</div>
+        <h2>Записаться на сеанс</h2>
+        <p class="lead">Заполните форму — администратор свяжется с вами для подтверждения и обсуждения эскиза.</p>
+
+        <div class="booking" id="booking-wrap">
+          <form class="form" id="booking-form" novalidate>
+
+            <!-- Шаг 1: мастер -->
+            <fieldset id="field-master">
+              <legend><span class="step">01</span>Мастер</legend>
+              <div class="master-picker" id="master-picker" role="radiogroup"></div>
+              <p class="error-msg" id="error-master" aria-live="polite"></p>
+            </fieldset>
+
+            <!-- Шаг 2: услуга -->
+            <fieldset>
+              <legend><span class="step">02</span>Услуга</legend>
+              <div class="field" id="field-service">
+                <label for="service">Что будем бить?</label>
+                <select id="service" name="service" required>
+                  <option value="">— выберите услугу —</option>
+                </select>
+                <p class="error-msg" id="error-service" aria-live="polite"></p>
+              </div>
+            </fieldset>
+
+            <!-- Шаг 3: дата и время -->
+            <fieldset>
+              <legend><span class="step">03</span>Дата и время</legend>
+              <div class="row">
+                <div class="field" id="field-date">
+                  <label for="date">Дата</label>
+                  <input type="date" id="date" name="date" required>
+                  <p class="hint" id="date-hint">Сначала выберите мастера</p>
+                  <p class="error-msg" id="error-date" aria-live="polite"></p>
+                </div>
+                <div class="field" id="field-time">
+                  <label for="time">Время</label>
+                  <select id="time" name="time" required disabled>
+                    <option value="">— выберите мастера —</option>
+                  </select>
+                  <p class="error-msg" id="error-time" aria-live="polite"></p>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Шаг 4: контакты -->
+            <fieldset>
+              <legend><span class="step">04</span>Контакты</legend>
+              <div class="field" id="field-name">
+                <label for="name">Имя</label>
+                <input type="text" id="name" name="name" autocomplete="name" placeholder="Как к вам обращаться" required>
+                <p class="error-msg" id="error-name" aria-live="polite"></p>
+              </div>
+              <div class="row">
+                <div class="field" id="field-phone">
+                  <label for="phone">Телефон</label>
+                  <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="+7 900 000-00-00" required>
+                  <p class="error-msg" id="error-phone" aria-live="polite"></p>
+                </div>
+                <div class="field" id="field-email">
+                  <label for="email">E-mail <span class="opt">(необязательно)</span></label>
+                  <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com">
+                  <p class="error-msg" id="error-email" aria-live="polite"></p>
+                </div>
+              </div>
+              <div class="field">
+                <label for="comment">Идея татуировки <span class="opt">(необязательно)</span></label>
+                <textarea id="comment" name="comment" maxlength="500" placeholder="Опишите задумку, зону, размер, приложите ссылки на референсы"></textarea>
+              </div>
+              <div class="field" id="field-consent">
+                <label class="checkbox">
+                  <input type="checkbox" id="consent" name="consent" required>
+                  <span>Мне исполнилось 18 лет, и я согласен(на) на обработку персональных данных</span>
+                </label>
+                <p class="error-msg" id="error-consent" aria-live="polite"></p>
+              </div>
+            </fieldset>
+
+            <!-- Поле-ловушка для спам-ботов: люди его не видят и не заполняют -->
+            <div class="hp" aria-hidden="true">
+              <label for="website">Не заполняйте это поле</label>
+              <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+            </div>
+
+            <p class="error-msg submit-error" id="error-submit" role="alert"></p>
+            <button type="submit" class="btn" id="submit-btn" style="width:100%">Записаться</button>
+          </form>
+
+          <!-- Итоговая стоимость: обновляется при любом изменении мастера/услуги -->
+          <aside class="summary" aria-labelledby="summary-title">
+            <h3 id="summary-title">Ваш сеанс</h3>
+            <dl>
+              <div class="summary__row"><dt>Мастер</dt><dd id="sum-master">—</dd></div>
+              <div class="summary__row"><dt>Услуга</dt><dd id="sum-service">—</dd></div>
+              <div class="summary__row"><dt>Базовая цена</dt><dd id="sum-base">—</dd></div>
+              <div class="summary__row"><dt>Коэффициент мастера</dt><dd id="sum-rate">—</dd></div>
+              <div class="summary__row"><dt>Длительность</dt><dd id="sum-duration">—</dd></div>
+            </dl>
+            <div class="summary__total">
+              <span>Итого</span>
+              <output id="sum-total" for="service" aria-live="polite">0 ₽</output>
+            </div>
+            <p class="hint">Предоплата не требуется. Окончательная цена фиксируется после согласования эскиза.</p>
+          </aside>
+        </div>
+
+        <!-- Сообщение об успехе (скрыто до отправки) -->
+        <div class="success" id="success" hidden tabindex="-1">
+          <div class="success__icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path d="M5 12l5 5L20 7"/>
+            </svg>
+          </div>
+          <h3>Вы записаны!</h3>
+          <p id="success-text" style="color:var(--muted);margin:0"></p>
+          <div class="success__details" id="success-details"></div>
+          <div><button type="button" class="btn btn--ghost" id="new-booking">Новая запись</button></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================= ПОДВАЛ ========================= -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div><strong>Чёрная Игла</strong><br>Вымышленная тату-студия.<br>Все совпадения случайны.</div>
+      <div><strong>Адрес</strong><br>ул. Чернильная, 13, подвал<br>Ежедневно 10:00–21:00</div>
+      <div><strong>Контакты</strong><br>+7 (900) 000-13-13<br>hello@black-needle.example</div>
+    </div>
+  </footer>
+
+  <script>
+    'use strict';
+
+    /* =========================================================
+       ДАННЫЕ
+       Редактируйте услуги и мастеров здесь — разметка прайса,
+       карточки мастеров и форма строятся из этих массивов автоматически.
+       ========================================================= */
+
+    /**
+     * Услуги прайс-листа.
+     * id       — уникальный ключ (используется в форме)
+     * category — подпись над названием (размер / зона / сложность / особое)
+     * price    — базовая цена в рублях
+     * duration — ориентировочная длительность сеанса в часах
+     */
+    const SERVICES = [
+      { id: 'mini',     category: 'Размер',    name: 'Мини-тату до 5 см',               price: 3000,  duration: 1,   desc: 'Символ, знак, небольшая надпись. Идеально для первой татуировки.' },
+      { id: 'small',    category: 'Размер',    name: 'Малая тату 5–10 см',              price: 6000,  duration: 2,   desc: 'Компактный рисунок на предплечье, лодыжке, плече.' },
+      { id: 'medium',   category: 'Размер',    name: 'Средняя тату 10–20 см',           price: 11000, duration: 3,   desc: 'Полноценная композиция с проработкой деталей.' },
+      { id: 'large',    category: 'Размер',    name: 'Крупная тату 20–30 см',           price: 19000, duration: 5,   desc: 'Бедро, лопатка, голень. Может потребоваться 2 сеанса.' },
+      { id: 'zone',     category: 'Зона',      name: 'Сложная зона: рёбра, шея, кисти', price: 13000, duration: 3,   desc: 'Работа 10–15 см на чувствительных и подвижных участках.' },
+      { id: 'lettering',category: 'Сложность', name: 'Леттеринг / каллиграфия',         price: 4500,  duration: 1.5, desc: 'Надпись любым шрифтом, включая авторские скрипты.' },
+      { id: 'realism',  category: 'Сложность', name: 'Реализм / портрет 10–15 см',      price: 17000, duration: 5,   desc: 'Фотореалистичная работа с тональными переходами.' },
+      { id: 'sleeve',   category: 'Особое',    name: 'Рукав — один сеанс 6 часов',      price: 30000, duration: 6,   desc: 'Полный рукав обычно занимает 4–6 сеансов.' },
+      { id: 'coverup',  category: 'Особое',    name: 'Перекрытие (cover-up)',           price: 15000, duration: 4,   desc: 'Перекрываем старую или неудачную татуировку новой.' },
+      { id: 'touchup',  category: 'Особое',    name: 'Коррекция / обновление',          price: 3500,  duration: 1,   desc: 'Освежение цвета и контура. Бесплатно в течение месяца на наши работы.' },
+    ];
+
+    /**
+     * Мастера.
+     * rate  — коэффициент к базовой цене (1 = базовая цена, 1.2 = +20%)
+     * days  — рабочие дни: 0 = вс, 1 = пн, … 6 = сб
+     * hours — начало и конец рабочего дня (часы, 24-часовой формат)
+     */
+    const MASTERS = [
+      {
+        id: 'raven',
+        name: 'Марк Ершов',
+        nick: '«Ворон»',
+        initials: 'МЕ',
+        bio: 'Бывший график-иллюстратор, в тату с 2014 года. Любит плотный чёрный, жёсткий контраст и геометрию, которая не расплывается со временем.',
+        styles: ['Блэкворк', 'Дотворк', 'Графика', 'Орнаментал'],
+        rate: 1,
+        days: [1, 3, 5],
+        hours: { start: 11, end: 20 },
+      },
+      {
+        id: 'fox',
+        name: 'Алиса Ким',
+        nick: '«Лиса»',
+        initials: 'АК',
+        bio: 'Мастер тонкой линии. Делает аккуратные минималистичные работы и авторские надписи, особенно хорошо — на первой татуировке клиента.',
+        styles: ['Fine line', 'Минимализм', 'Леттеринг', 'Ботаника'],
+        rate: 1.1,
+        days: [2, 4, 6],
+        hours: { start: 12, end: 21 },
+      },
+      {
+        id: 'bear',
+        name: 'Тимур Галиев',
+        nick: '«Медведь»',
+        initials: 'ТГ',
+        bio: 'Арт-директор студии, призёр трёх тату-конвенций. Берётся за крупные проекты, реализм и самые безнадёжные перекрытия.',
+        styles: ['Реализм', 'Нео-традишнл', 'Cover-up', 'Цвет'],
+        rate: 1.25,
+        days: [3, 4, 5, 6, 0],
+        hours: { start: 10, end: 18 },
+      },
+    ];
+
+    /* Сколько дней вперёд можно записаться */
+    const BOOKING_WINDOW_DAYS = 60;
+
+    /* Куда отправляются заявки.
+       '/api/booking' — локальный server.ps1; для Cloudflare Worker — его полный адрес. */
+    const BOOKING_ENDPOINT = '/api/booking';
+
+
+    /* =========================================================
+       УТИЛИТЫ
+       ========================================================= */
+
+    const $ = (sel, root = document) => root.querySelector(sel);
+
+    const DAY_SHORT = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+    const DAY_ORDER = [1, 2, 3, 4, 5, 6, 0]; // неделя начинается с понедельника
+
+    const money = new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 });
+    const formatPrice = (n) => money.format(n);
+
+    /** Экранирование строк перед вставкой в HTML */
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    /** Дата → строка YYYY-MM-DD в локальном часовом поясе (не UTC!) */
+    function toISODate(d) {
+      const pad = (n) => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    }
+
+    /** Строка YYYY-MM-DD → объект Date (локальная полночь) */
+    function parseISODate(str) {
+      const [y, m, d] = str.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    /** Красивое описание графика: «Пн, Ср, Пт» */
+    const formatDays = (days) => DAY_ORDER.filter((d) => days.includes(d)).map((d) => DAY_SHORT[d]).join(', ');
+    const formatHours = (h) => `${h.start}:00–${h.end}:00`;
+    const formatDuration = (h) => `≈ ${String(h).replace('.', ',')} ч`;
+
+    const findService = (id) => SERVICES.find((s) => s.id === id);
+    const findMaster = (id) => MASTERS.find((m) => m.id === id);
+
+    /** Главная формула цены: базовая цена × коэффициент мастера, округление до 100 ₽ */
+    function calcPrice(service, master) {
+      if (!service) return 0;
+      const rate = master ? master.rate : 1;
+      return Math.round((service.price * rate) / 100) * 100;
+    }
+
+
+    /* =========================================================
+       РЕНДЕР СЕКЦИЙ ИЗ ДАННЫХ
+       ========================================================= */
+
+    /** Прайс-лист */
+    function renderPriceList() {
+      $('#price-list').innerHTML = SERVICES.map((s) => `
+        <li class="price-item">
+          <span class="price-item__tag">${esc(s.category)}</span>
+          <span class="price-item__name">${esc(s.name)}</span>
+          <span class="price-item__price">${formatPrice(s.price)}</span>
+          <p class="price-item__desc">${esc(s.desc)}</p>
+          <div class="price-item__meta">
+            <span>${formatDuration(s.duration)}</span>
+            <button type="button" class="btn btn--ghost btn--small" data-pick-service="${s.id}">Выбрать</button>
+          </div>
+        </li>`).join('');
+    }
+
+    /** Карточки мастеров */
+    function renderMasters() {
+      $('#masters-list').innerHTML = MASTERS.map((m) => `
+        <article class="master">
+          <div class="master__head">
+            <div class="avatar" aria-hidden="true">${esc(m.initials)}</div>
+            <div>
+              <h3 class="master__name">${esc(m.name)}</h3>
+              <div class="master__nick">${esc(m.nick)}</div>
+            </div>
+          </div>
+          <p class="master__bio">${esc(m.bio)}</p>
+          <ul class="tags" aria-label="Стили">${m.styles.map((st) => `<li>${esc(st)}</li>`).join('')}</ul>
+          <dl class="schedule">
+            <dt>Рабочие дни</dt><dd>${formatDays(m.days)}</dd>
+            <dt>Часы</dt><dd>${formatHours(m.hours)}</dd>
+            <dt>Коэффициент цены</dt><dd>×${String(m.rate).replace('.', ',')}</dd>
+          </dl>
+          <button type="button" class="btn btn--ghost" data-pick-master="${m.id}">Записаться к мастеру</button>
+        </article>`).join('');
+    }
+
+    /** Карточки выбора мастера в форме (радиокнопки) */
+    function renderMasterPicker() {
+      $('#master-picker').innerHTML = MASTERS.map((m) => `
+        <label class="master-option">
+          <input type="radio" name="master" value="${m.id}">
+          <span class="master-option__body">
+            <span class="avatar" aria-hidden="true">${esc(m.initials)}</span>
+            <span class="master-option__text">
+              <strong>${esc(m.name)}</strong>
+              <small>${formatDays(m.days)} · ×${String(m.rate).replace('.', ',')}</small>
+            </span>
+          </span>
+        </label>`).join('');
+    }
+
+    /** Список услуг в <select> */
+    function renderServiceOptions() {
+      const select = $('#service');
+      SERVICES.forEach((s) => select.add(new Option(`${s.name} — от ${formatPrice(s.price)}`, s.id)));
+    }
+
+
+    /* =========================================================
+       ФОРМА: СОСТОЯНИЕ И ДИНАМИКА
+       ========================================================= */
+
+    const form = $('#booking-form');
+    const dateInput = $('#date');
+    const timeSelect = $('#time');
+    const serviceSelect = $('#service');
+
+    /* После первой попытки отправки поля валидируются «на лету» */
+    let submitAttempted = false;
+
+    const getSelectedMaster = () => findMaster(form.elements.master.value);
+    const getSelectedService = () => findService(serviceSelect.value);
+
+    /** Ограничиваем date picker: с завтрашнего дня и на BOOKING_WINDOW_DAYS вперёд */
+    function setupDateLimits() {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const max = new Date();
+      max.setDate(max.getDate() + BOOKING_WINDOW_DAYS);
+      dateInput.min = toISODate(tomorrow);
+      dateInput.max = toISODate(max);
+    }
+
+    /** Ближайшая рабочая дата мастера, начиная с завтра */
+    function nextWorkingDate(master) {
+      const d = parseISODate(dateInput.min);
+      for (let i = 0; i < 14; i++) {
+        if (master.days.includes(d.getDay())) return toISODate(d);
+        d.setDate(d.getDate() + 1);
+      }
+      return '';
+    }
+
+    /** Заполняем слоты времени по часам работы выбранного мастера */
+    function updateTimeSlots() {
+      const master = getSelectedMaster();
+      const prev = timeSelect.value;
+      timeSelect.innerHTML = '';
+
+      if (!master) {
+        timeSelect.add(new Option('— выберите мастера —', ''));
+        timeSelect.disabled = true;
+        return;
+      }
+
+      // Последний слот — за 1 час до конца рабочего дня
+      timeSelect.add(new Option('— выберите время —', ''));
+      for (let h = master.hours.start; h < master.hours.end; h++) {
+        const t = `${String(h).padStart(2, '0')}:00`;
+        timeSelect.add(new Option(t, t));
+      }
+      timeSelect.disabled = false;
+      // Сохраняем прежний выбор, если он есть в новом графике
+      if ([...timeSelect.options].some((o) => o.value === prev)) timeSelect.value = prev;
+    }
+
+    /** Подсказка под датой с рабочими днями мастера */
+    function updateDateHint() {
+      const master = getSelectedMaster();
+      $('#date-hint').textContent = master
+        ? `${master.name} работает: ${formatDays(master.days)}, ${formatHours(master.hours)}`
+        : 'Сначала выберите мастера';
+    }
+
+    /** Пересчёт итоговой стоимости и сводки — вызывается при любом изменении */
+    function updateSummary() {
+      const master = getSelectedMaster();
+      const service = getSelectedService();
+      const total = calcPrice(service, master);
+
+      $('#sum-master').textContent = master ? master.name : '—';
+      $('#sum-service').textContent = service ? service.name : '—';
+      $('#sum-base').textContent = service ? formatPrice(service.price) : '—';
+      $('#sum-rate').textContent = master ? `×${String(master.rate).replace('.', ',')}` : '—';
+      $('#sum-duration').textContent = service ? formatDuration(service.duration) : '—';
+
+      const out = $('#sum-total');
+      const text = formatPrice(total);
+      if (out.textContent !== text) {
+        out.textContent = text;
+        // Короткая анимация, чтобы было видно, что цена изменилась
+        out.classList.remove('bump');
+        void out.offsetWidth;
+        out.classList.add('bump');
+        setTimeout(() => out.classList.remove('bump'), 200);
+      }
+    }
+
+    /** Обработчик смены мастера: обновляем график, слоты, цену */
+    function onMasterChange() {
+      const master = getSelectedMaster();
+      updateDateHint();
+      updateTimeSlots();
+      // Если дата не выбрана — подставим ближайший рабочий день мастера
+      if (master && !dateInput.value) dateInput.value = nextWorkingDate(master);
+      updateSummary();
+      if (submitAttempted) validateForm();
+    }
+
+
+    /* =========================================================
+       ВАЛИДАЦИЯ
+       Каждое правило возвращает текст ошибки или пустую строку.
+       ========================================================= */
+
+    const validators = {
+      master() {
+        return getSelectedMaster() ? '' : 'Выберите мастера';
+      },
+      service() {
+        return getSelectedService() ? '' : 'Выберите услугу из прайс-листа';
+      },
+      date() {
+        const value = dateInput.value;
+        if (!value) return 'Укажите дату сеанса';
+        if (value < dateInput.min) return 'Запись возможна только на будущие даты, начиная с завтра';
+        if (value > dateInput.max) return `Запись открыта не более чем на ${BOOKING_WINDOW_DAYS} дней вперёд`;
+        const master = getSelectedMaster();
+        if (master && !master.days.includes(parseISODate(value).getDay())) {
+          return `В этот день ${master.name} не работает. Доступные дни: ${formatDays(master.days)}`;
+        }
+        return '';
+      },
+      time() {
+        return timeSelect.value ? '' : 'Выберите время';
+      },
+      name() {
+        const v = form.elements.name.value.trim();
+        if (!v) return 'Введите имя';
+        if (!/^[A-Za-zА-Яа-яЁё\s'-]{2,40}$/.test(v)) return 'Имя — от 2 до 40 букв, без цифр';
+        return '';
+      },
+      phone() {
+        const digits = form.elements.phone.value.replace(/\D/g, '');
+        if (!digits) return 'Введите номер телефона';
+        if (digits.length < 10 || digits.length > 12) return 'Проверьте номер: например, +7 900 123-45-67';
+        return '';
+      },
+      email() {
+        const v = form.elements.email.value.trim();
+        if (v && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return 'Похоже, в адресе ошибка';
+        return '';
+      },
+      consent() {
+        return form.elements.consent.checked ? '' : 'Необходимо подтвердить возраст и согласие';
+      },
+    };
+
+    /** Показывает/скрывает ошибку у конкретного поля */
+    function setFieldError(key, message) {
+      const wrapper = $(`#field-${key}`);
+      const errorEl = $(`#error-${key}`);
+      if (errorEl) errorEl.textContent = message;
+      if (wrapper) wrapper.classList.toggle('is-invalid', Boolean(message));
+      const control = form.elements[key];
+      if (control && control.setAttribute) control.setAttribute('aria-invalid', message ? 'true' : 'false');
+    }
+
+    /** Проверяет все поля; возвращает ключ первого ошибочного поля или null */
+    function validateForm() {
+      let firstInvalid = null;
+      for (const key of Object.keys(validators)) {
+        const msg = validators[key]();
+        setFieldError(key, msg);
+        if (msg && !firstInvalid) firstInvalid = key;
+      }
+      return firstInvalid;
+    }
+
+
+    /* =========================================================
+       ОТПРАВКА ЗАЯВКИ
+       Данные уходят на сервер (server.ps1 или worker.js),
+       а он пересылает их в Telegram. Токен бота в браузер не попадает.
+       ========================================================= */
+
+    const setSubmitError = (msg) => { $('#error-submit').textContent = msg; };
+
+    /** POST заявки на сервер; бросает ошибку с понятным текстом при неудаче */
+    async function sendBooking(payload) {
+      const res = await fetch(BOOKING_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) throw new Error(data.error || `ошибка ${res.status}`);
+    }
+
+    async function onSubmit(e) {
+      e.preventDefault();
+      submitAttempted = true;
+      setSubmitError('');
+
+      const invalid = validateForm();
+      if (invalid) {
+        // Фокус на первое поле с ошибкой
+        const el = invalid === 'master' ? form.querySelector('input[name="master"]') : form.elements[invalid];
+        el && el.focus();
+        return;
+      }
+
+      const master = getSelectedMaster();
+      const service = getSelectedService();
+      const date = parseISODate(dateInput.value);
+      const dateText = date.toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' });
+      const bookingId = 'BN-' + Math.random().toString(36).slice(2, 7).toUpperCase();
+      const name = form.elements.name.value.trim();
+      const price = formatPrice(calcPrice(service, master));
+
+      const btn = $('#submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Отправляем…';
+      try {
+        await sendBooking({
+          bookingId,
+          name,
+          phone: form.elements.phone.value.trim(),
+          email: form.elements.email.value.trim(),
+          comment: form.elements.comment.value.trim(),
+          master: master.name,
+          service: service.name,
+          date: dateText,
+          time: timeSelect.value,
+          price,
+          website: form.elements.website.value, // ловушка для ботов
+        });
+      } catch (err) {
+        // file:// или выключенный сервер дают «Failed to fetch»
+        setSubmitError(`Не удалось отправить заявку (${err.message}). Попробуйте ещё раз или позвоните нам: +7 (900) 000-13-13.`);
+        return;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Записаться';
+      }
+
+      $('#success-text').textContent = `${name}, спасибо! Мы позвоним вам в течение часа, чтобы подтвердить запись.`;
+      $('#success-details').innerHTML = `
+        <p>Номер записи: <b>${bookingId}</b></p>
+        <p>Мастер: <b>${esc(master.name)}</b></p>
+        <p>Услуга: <b>${esc(service.name)}</b></p>
+        <p>Когда: <b>${esc(dateText)}, ${esc(timeSelect.value)}</b></p>
+        <p>Стоимость: <b>${price}</b></p>`;
+
+      $('#booking-wrap').hidden = true;
+      const success = $('#success');
+      success.hidden = false;
+      success.focus();
+      success.scrollIntoView({ block: 'center' });
+    }
+
+    /** Сброс формы для новой записи */
+    function resetBooking() {
+      form.reset();
+      submitAttempted = false;
+      setSubmitError('');
+      Object.keys(validators).forEach((k) => setFieldError(k, ''));
+      onMasterChange();
+      $('#success').hidden = true;
+      $('#booking-wrap').hidden = false;
+      $('#booking').scrollIntoView();
+    }
+
+
+    /* =========================================================
+       ИНИЦИАЛИЗАЦИЯ И ОБРАБОТЧИКИ
+       ========================================================= */
+
+    function init() {
+      renderPriceList();
+      renderMasters();
+      renderMasterPicker();
+      renderServiceOptions();
+      setupDateLimits();
+      updateSummary();
+
+      // Мастер / услуга → мгновенный пересчёт цены
+      $('#master-picker').addEventListener('change', onMasterChange);
+      serviceSelect.addEventListener('change', () => {
+        updateSummary();
+        if (submitAttempted) setFieldError('service', validators.service());
+      });
+
+      // Остальные поля: живая валидация после первой попытки отправки
+      ['date', 'time', 'name', 'phone', 'email', 'consent'].forEach((key) => {
+        const el = form.elements[key];
+        const evt = el.type === 'checkbox' || el.tagName === 'SELECT' || el.type === 'date' ? 'change' : 'input';
+        el.addEventListener(evt, () => { if (submitAttempted) setFieldError(key, validators[key]()); });
+        // Подсветка ошибки при уходе с заполненного поля
+        el.addEventListener('blur', () => { if (submitAttempted || el.value) setFieldError(key, validators[key]()); });
+      });
+
+      form.addEventListener('submit', onSubmit);
+      $('#new-booking').addEventListener('click', resetBooking);
+
+      // Кнопки «Выбрать» в прайсе и «Записаться к мастеру» — предзаполняют форму
+      document.addEventListener('click', (e) => {
+        const serviceBtn = e.target.closest('[data-pick-service]');
+        const masterBtn = e.target.closest('[data-pick-master]');
+        if (!serviceBtn && !masterBtn) return;
+
+        if ($('#booking-wrap').hidden) resetBooking();
+        if (serviceBtn) {
+          serviceSelect.value = serviceBtn.dataset.pickService;
+          serviceSelect.dispatchEvent(new Event('change'));
+        }
+        if (masterBtn) {
+          const radio = form.querySelector(`input[name="master"][value="${masterBtn.dataset.pickMaster}"]`);
+          radio.checked = true;
+          onMasterChange();
+        }
+        $('#booking').scrollIntoView();
+      });
+
+      // Мобильное меню
+      const toggle = $('.nav-toggle');
+      const nav = $('#nav');
+      toggle.addEventListener('click', () => {
+        const open = nav.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded', String(open));
+      });
+      nav.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A') {
+          nav.classList.remove('is-open');
+          toggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
