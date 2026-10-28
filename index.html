@@ -827,6 +827,10 @@
        '/api/booking' — локальный server.ps1; для Cloudflare Worker — его полный адрес. */
     const BOOKING_ENDPOINT = '/api/booking';
 
+    /* Демо-режим: на GitHub Pages сервера нет, поэтому заявка не отправляется,
+       а сразу показывается сообщение об успехе с пометкой «демо». */
+    const DEMO_MODE = location.hostname.endsWith('github.io');
+
 
     /* =========================================================
        УТИЛИТЫ
@@ -1116,6 +1120,10 @@
 
     /** POST заявки на сервер; бросает ошибку с понятным текстом при неудаче */
     async function sendBooking(payload) {
+      if (DEMO_MODE) {
+        await new Promise((r) => setTimeout(r, 700)); // имитация задержки сети
+        return;
+      }
       const res = await fetch(BOOKING_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1178,7 +1186,8 @@
         <p>Мастер: <b>${esc(master.name)}</b></p>
         <p>Услуга: <b>${esc(service.name)}</b></p>
         <p>Когда: <b>${esc(dateText)}, ${esc(timeSelect.value)}</b></p>
-        <p>Стоимость: <b>${price}</b></p>`;
+        <p>Стоимость: <b>${price}</b></p>
+        ${DEMO_MODE ? '<p style="margin-top:10px;color:var(--muted)">Демо-версия: заявка не отправлялась.</p>' : ''}`;
 
       $('#booking-wrap').hidden = true;
       const success = $('#success');
